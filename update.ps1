@@ -99,10 +99,10 @@ Write-Host "####################################################################
 Write-Host "                                        Updating DuckStation Finished"
 Write-Host "##############################################################################################"
 
-# PS2 update
+# PCSX2 update
 
 Write-Host "##############################################################################################"
-Write-Host "                                        Updating PS2"
+Write-Host "                                        Updating PCSX2"
 Write-Host "##############################################################################################"
 
 # Specify the target folder
@@ -129,12 +129,12 @@ $assetUrl = $latestRelease.assets[4].browser_download_url
         7z x $filename -o"$targetFolder" -y
         Remove-Item $filename -Recurse -Force
 } else {
-    Write-Host "Failed to retrieve PS2 download URL from the GitHub API."
+    Write-Host "Failed to retrieve PCSX2 download URL from the GitHub API."
 }
 
 
 Write-Host "##############################################################################################"
-Write-Host "                                        Updating PS2 Finished"
+Write-Host "                                        Updating PCSX2 Finished"
 Write-Host "##############################################################################################"
 
 # PPSSPP update
