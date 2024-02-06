@@ -99,10 +99,10 @@ Write-Host "####################################################################
 Write-Host "                                        Updating DuckStation Finished"
 Write-Host "##############################################################################################"
 
-# PCSX2 update
+# PS2 update
 
 Write-Host "##############################################################################################"
-Write-Host "                                        Updating PCSX2"
+Write-Host "                                        Updating PS2"
 Write-Host "##############################################################################################"
 
 # Specify the target folder
@@ -129,12 +129,12 @@ $assetUrl = $latestRelease.assets[4].browser_download_url
         7z x $filename -o"$targetFolder" -y
         Remove-Item $filename -Recurse -Force
 } else {
-    Write-Host "Failed to retrieve PCSX2 download URL from the GitHub API."
+    Write-Host "Failed to retrieve PS2 download URL from the GitHub API."
 }
 
 
 Write-Host "##############################################################################################"
-Write-Host "                                        Updating PCSX2 Finished"
+Write-Host "                                        Updating PS2 Finished"
 Write-Host "##############################################################################################"
 
 # PPSSPP update
@@ -265,18 +265,16 @@ Write-Host "####################################################################
 $targetFolder = 'D:\Retro Gaming\Emulators\Dolphin'
 
 # Send a web request to the URL
-$page = Invoke-WebRequest -Uri "https://dolphin-emu.org/download/"
+$request = Invoke-WebRequest -Uri "https://dolphin-emu.org/download/"
 
-# Parse the content of the page
-$pattern = "5\.0-\d+"
-$matches = $page.Content | Select-String -Pattern $pattern -AllMatches | Select-Object -First 1
+# Extract the download link from the response
+$downloadLink = $request.Links | Where-Object href -like '*21*x64.7z' | Select-Object -First 1 | Select-Object -ExpandProperty href
 
 # Output the version number
-$version = $matches.Matches.Value | Select-Object -First 1
-$filename = "dolphin-master-$version-x64.7z"
+$filename = [System.IO.Path]::GetFileName($downloadLink)
 
 # Download the file using the extracted URL
-Invoke-WebRequest -Uri "https://dl.dolphin-emu.org/builds/00/5c/dolphin-master-$version-x64.7z" -OutFile $filename
+Invoke-WebRequest -Uri "$downloadLink" -OutFile $filename
 7z x $filename -o"temp" -y
 Copy-Item  -Path "temp/Dolphin-x64/*" -Destination $targetFolder -Recurse -force
 Remove-Item $filename -Recurse -Force
