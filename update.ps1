@@ -146,21 +146,26 @@ Write-Host "####################################################################
 # Specify the target folder
 $targetFolder = 'D:\Retro Gaming\Emulators\psp'
 
-# get version number from site
-$site = Invoke-WebRequest -Uri "https://buildbot.orphis.net/ppsspp/index.php"
-$latest = $site.Links | Where-Object {$_.href -like "*Windows*"} | Select-Object -First 1
-$version = $latest.href -replace ".*rev=(v\\d+(\\.\\d+){1,3}).*", "`$1"
-$url = "$version"
+# Send a web request to the URL
+$request = Invoke-WebRequest -Uri "https://buildbot.orphis.net/ppsspp/index.php"
 
-# Define the regular expression pattern
-$pattern = "rev=(.*?)&"
+# Extract the download link from the response
+$downloadLink = $request.Links | Where-Object href -like '*windows-amd64' | Select-Object -First 1 | Select-Object -ExpandProperty href
+$cleanedUrl = $downloadLink -replace "amp;", ""
+
+# Define a regular expression to extract the revision string
+$regex = 'rev=([^&]+)'
 
 # Use Select-String to find matches in the URL
-$matches = $url | Select-String -Pattern $pattern | ForEach-Object { $_.Matches.Groups[1].Value }
+$version = $cleanedUrl | Select-String -Pattern $regex
+
+# Extract the revision string from the match
+$revision = $version.Matches.Groups[1].Value
 
 # Download the file using the extracted URL
-$downloadUrl = "https://buildbot.orphis.net/ppsspp/index.php?m=dl&rev=$matches&platform=windows-amd64"
-$filename = "ppsspp-$matches-windows-amd64.7z"
+$downloadUrl = "https://buildbot.orphis.net$cleanedUrl"
+$filename = "ppsspp-$revision-windows-amd64.7z"
+
 Invoke-WebRequest -Uri "$downloadUrl" -OutFile "$filename" -Headers @{
     "Referer"="https://buildbot.orphis.net";
     "User-Agent"="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36"
