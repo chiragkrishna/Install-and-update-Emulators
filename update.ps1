@@ -33,9 +33,16 @@ if ($response.assets) {
             # Download the file using the extracted URL
             Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
             7z x downloads/$filename -o"temp" -y
-            Copy-Item  -Path "temp/yuzu-windows-msvc/*" -Destination $targetFolder -Recurse -force
-            Remove-Item temp -Recurse -Force
-            Remove-Item yuzu/yuzu-windows-msvc-source-*.tar.xz -Recurse -Force
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "Extraction successful."
+                Copy-Item  -Path "temp/yuzu-windows-msvc/*" -Destination $targetFolder -Recurse -force
+                Remove-Item temp -Recurse -Force
+                Remove-Item yuzu/yuzu-windows-msvc-source-*.tar.xz -Recurse -Force
+            }
+            else {
+                Write-Host "Extraction failed."
+                Remove-Item downloads/$filename -Recurse -Force
+            }
         }
     } 
 }
@@ -72,6 +79,13 @@ if ($response.assets) {
         # Download the file using the extracted URL
         Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
         7z x downloads/$filename -o"$targetFolder" -y
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "Extraction successful."
+        }
+        else {
+            Write-Host "Extraction failed."
+            Remove-Item downloads/$filename -Recurse -Force
+        }
     }
 }
 Write-Host "##############################################################################################"
@@ -101,6 +115,13 @@ else {
     # Download the file using the extracted URL
     Invoke-WebRequest -Uri https://github.com/stenzek/duckstation/releases/download/latest/duckstation-windows-x64-release.zip -OutFile downloads/$filename
     7z x downloads/$filename -o"$targetFolder" -y
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Extraction successful."
+    }
+    else {
+        Write-Host "Extraction failed."
+        Remove-Item downloads/$filename -Recurse -Force
+    }
 }
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating DuckStation Finished"
@@ -131,6 +152,13 @@ else {
     # Download the file using the extracted URL
     Invoke-WebRequest -Uri $assetUrl -OutFile downloads/$filename
     7z x downloads/$filename -o"$targetFolder" -y
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Extraction successful."
+    }
+    else {
+        Write-Host "Extraction failed."
+        Remove-Item downloads/$filename -Recurse -Force
+    }
 }
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating PCSX2 Finished"
@@ -175,8 +203,16 @@ else {
         "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36"
     }
     7z x downloads/$filename -o"temp" -y
-    Copy-Item  -Path "temp/ppsspp/*" -Destination $targetFolder -Recurse -force
-    Remove-Item temp -Recurse -Force
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Extraction successful."
+        Copy-Item  -Path "temp/ppsspp/*" -Destination $targetFolder -Recurse -force
+        Remove-Item temp -Recurse -Force
+
+    }
+    else {
+        Write-Host "Extraction failed."
+        Remove-Item downloads/$filename -Recurse -Force
+    }
 }
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating PPSSPP Finished"
@@ -209,6 +245,13 @@ else {
     $downloadUrl = "https://buildbot.libretro.com/nightly/windows/x86_64/RetroArch.7z"
     Invoke-WebRequest -Uri "$downloadUrl" -OutFile "downloads/$filename"
     7z x downloads/$filename -o"$targetFolder" -y
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Extraction successful."
+    }
+    else {
+        Write-Host "Extraction failed."
+        Remove-Item downloads/$filename -Recurse -Force
+    }
 }
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating RetroArch Finished"
@@ -240,8 +283,15 @@ else {
     # Download the file using the extracted URL
     Invoke-WebRequest -Uri $assetUrl -OutFile downloads/$filename
     7z x downloads/$filename -o"temp" -y
-    Copy-Item  -Path "temp/publish/*" -Destination $targetFolder -Recurse -force
-    Remove-Item temp -Recurse -Force
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Extraction successful."
+        Copy-Item  -Path "temp/publish/*" -Destination $targetFolder -Recurse -force
+        Remove-Item temp -Recurse -Force
+    }
+    else {
+        Write-Host "Extraction failed."
+        Remove-Item downloads/$filename -Recurse -Force
+    }
 }
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating Ryujinx Finished"
@@ -273,6 +323,13 @@ if ($response.assets) {
         # Download the file using the extracted URL
         Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
         7z x downloads/$filename -o"$targetFolder" -y
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "Extraction successful."
+        }
+        else {
+            Write-Host "Extraction failed."
+            Remove-Item downloads/$filename -Recurse -Force
+        }
     }
 }
 
@@ -332,8 +389,15 @@ else {
     # Download the file using the extracted URL
     Invoke-WebRequest -Uri "$downloadLink" -OutFile downloads/$filename
     7z x downloads/$filename -o"temp" -y
-    Copy-Item  -Path "temp/Dolphin-x64/*" -Destination $targetFolder -Recurse -force
-    Remove-Item temp -Recurse -Force
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Extraction successful."
+        Copy-Item  -Path "temp/Dolphin-x64/*" -Destination $targetFolder -Recurse -force
+        Remove-Item temp -Recurse -Force
+    }
+    else {
+        Write-Host "Extraction failed."
+        Remove-Item downloads/$filename -Recurse -Force
+    }
 }
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating Dolphin Finished"
