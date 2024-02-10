@@ -9,7 +9,7 @@ Write-Host "                                        Updating YUZU"
 Write-Host "##############################################################################################"
 
 # Specify the target folder
-$targetFolder = 'D:\Retro Gaming\Emulators\yuzu'
+$targetFolder = Join-Path (Get-Location) 'yuzu'
 
 # Get the latest release information from the GitHub API
 $response = Invoke-RestMethod -Uri "https://api.github.com/repos/yuzu-emu/yuzu-mainline/releases/latest"
@@ -26,19 +26,18 @@ if ($response.assets) {
 
         # If the file already exists, remove it before downloading the updated version
         if (Test-Path $filename) {
-            Remove-Item $filename -Force
+            Write-Host "You Have Latest YUZU Version $filename"
         }
-
-        # Download the file using the extracted URL
-        Invoke-WebRequest -Uri $downloadUrl -OutFile $filename
-        7z x $filename -o"temp" -y
-        Copy-Item  -Path "temp/yuzu-windows-msvc/*" -Destination $targetFolder -Recurse -force
-        Remove-Item $filename -Recurse -Force
-        Remove-Item temp -Recurse -Force
-        Remove-Item yuzu/yuzu-windows-msvc-source-*.tar.xz -Recurse -Force
+        else {
+            Remove-Item yuzu-windows-msvc*.7z -Recurse -Force
+            # Download the file using the extracted URL
+            Invoke-WebRequest -Uri $downloadUrl -OutFile $filename
+            7z x $filename -o"temp" -y
+            Copy-Item  -Path "temp/yuzu-windows-msvc/*" -Destination $targetFolder -Recurse -force
+            Remove-Item temp -Recurse -Force
+            Remove-Item yuzu/yuzu-windows-msvc-source-*.tar.xz -Recurse -Force
+        }
     } 
-} else {
-    Write-Host "Failed to retrieve YUZU download URL from the GitHub API."
 }
 
 Write-Host "##############################################################################################"
@@ -53,30 +52,28 @@ Write-Host "                                        Updating RPCS3"
 Write-Host "##############################################################################################"
 
 # Specify the target folder
-$targetFolder = 'D:\Retro Gaming\Emulators\ps3'
+$targetFolder = Join-Path (Get-Location) 'RPCS3'
 
 # Get the latest release information from the GitHub API
 $response = Invoke-RestMethod -Uri "https://api.github.com/repos/RPCS3/rpcs3-binaries-win/releases/latest"
 
 # Check if the response contains the necessary information
 if ($response.assets) {
-        # Extract the download URL and filename from the asset
-        $downloadUrl = $response.assets[0].browser_download_url
-        $filename = [System.IO.Path]::GetFileName($downloadUrl)
+    # Extract the download URL and filename from the asset
+    $downloadUrl = $response.assets[0].browser_download_url
+    $filename = [System.IO.Path]::GetFileName($downloadUrl)
 
-        # If the file already exists, remove it before downloading the updated version
-        if (Test-Path $filename) {
-            Remove-Item $filename -Force
-        }
-
+    # If the file already exists, remove it before downloading the updated version
+    if (Test-Path $filename) {
+        Write-Host "You Have Latest RPCS3 Version $filename"
+    }
+    else {
+        Remove-Item rpcs3*.win64.7z -Recurse -Force
         # Download the file using the extracted URL
         Invoke-WebRequest -Uri $downloadUrl -OutFile $filename
         7z x $filename -o"$targetFolder" -y
-        Remove-Item $filename -Recurse -Force
-} else {
-    Write-Host "Failed to retrieve RPCS3 download URL from the GitHub API."
+    }
 }
-
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating RPCS3 Finished"
 Write-Host "##############################################################################################"
@@ -88,25 +85,35 @@ Write-Host "                                        Updating DuckStation"
 Write-Host "##############################################################################################"
 
 # Specify the target folder
-$targetFolder = 'D:\Retro Gaming\Emulators\ps1'
+$targetFolder = Join-Path (Get-Location) 'DuckStation'
+# Define the URL for the API request
+$url = "https://api.github.com/repos/stenzek/duckstation/releases/latest"
+# Send the API request and store the response
+$response = Invoke-RestMethod -Uri $url -Headers $headers
+$date = Get-Date $response.created_at -Format "dd/MM/yyyy"
+$filename = "duckstation-windows-x64-release-$date.zip"
 
-# Download the file using the extracted URL
-Invoke-WebRequest -Uri https://github.com/stenzek/duckstation/releases/download/latest/duckstation-windows-x64-release.zip -OutFile duckstation-windows-x64-release.zip
-7z x duckstation-windows-x64-release.zip -o"$targetFolder" -y
-Remove-Item duckstation-windows-x64-release.zip -Recurse -Force
-
+if (Test-Path $filename) {
+    Write-Host "You Have Latest DuckStation Version $filename"
+}
+else {
+    Remove-Item duckstation-windows-x64-release*.zip -Recurse -Force
+    # Download the file using the extracted URL
+    Invoke-WebRequest -Uri https://github.com/stenzek/duckstation/releases/download/latest/duckstation-windows-x64-release.zip -OutFile $filename
+    7z x $filename -o"$targetFolder" -y
+}
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating DuckStation Finished"
 Write-Host "##############################################################################################"
 
-# PS2 update
+# PCSX2 update
 
 Write-Host "##############################################################################################"
-Write-Host "                                        Updating PS2"
+Write-Host "                                        Updating PCSX2"
 Write-Host "##############################################################################################"
 
 # Specify the target folder
-$targetFolder = 'D:\Retro Gaming\Emulators\ps2'
+$targetFolder = Join-Path (Get-Location) 'PCSX2'
 
 # Get the latest release information from the GitHub API
 $response = Invoke-RestMethod -Uri "https://api.github.com/repos/PCSX2/pcsx2/releases"
@@ -114,27 +121,19 @@ $response = Invoke-RestMethod -Uri "https://api.github.com/repos/PCSX2/pcsx2/rel
 # Check if the response contains the necessary information
 $latestRelease = $response[0]
 $assetUrl = $latestRelease.assets[4].browser_download_url
-
-    if ($latestRelease) {
-        # Extract the download URL and filename from the asset
-        $filename = [System.IO.Path]::GetFileName($assetUrl)
-
-        # If the file already exists, remove it before downloading the updated version
-        if (Test-Path $filename) {
-            Remove-Item $filename -Force
-        }
-
-        # Download the file using the extracted URL
-        Invoke-WebRequest -Uri $assetUrl -OutFile $filename
-        7z x $filename -o"$targetFolder" -y
-        Remove-Item $filename -Recurse -Force
-} else {
-    Write-Host "Failed to retrieve PS2 download URL from the GitHub API."
+$filename = [System.IO.Path]::GetFileName($assetUrl)
+# If the file already exists, remove it before downloading the updated version
+if (Test-Path $filename) {
+    Write-Host "You Have Latest PCSX2 Version $filename"
 }
-
-
+else {
+    Remove-Item pcsx2*windows-x64-Qt.7z -Recurse -Force
+    # Download the file using the extracted URL
+    Invoke-WebRequest -Uri $assetUrl -OutFile $filename
+    7z x $filename -o"$targetFolder" -y
+}
 Write-Host "##############################################################################################"
-Write-Host "                                        Updating PS2 Finished"
+Write-Host "                                        Updating PCSX2 Finished"
 Write-Host "##############################################################################################"
 
 # PPSSPP update
@@ -144,7 +143,7 @@ Write-Host "                                        Updating PPSSPP"
 Write-Host "##############################################################################################"
 
 # Specify the target folder
-$targetFolder = 'D:\Retro Gaming\Emulators\psp'
+$targetFolder = Join-Path (Get-Location) 'PPSSPP'
 
 # Send a web request to the URL
 $request = Invoke-WebRequest -Uri "https://buildbot.orphis.net/ppsspp/index.php"
@@ -166,15 +165,19 @@ $revision = $version.Matches.Groups[1].Value
 $downloadUrl = "https://buildbot.orphis.net$cleanedUrl"
 $filename = "ppsspp-$revision-windows-amd64.7z"
 
-Invoke-WebRequest -Uri "$downloadUrl" -OutFile "$filename" -Headers @{
-    "Referer"="https://buildbot.orphis.net";
-    "User-Agent"="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36"
+if (Test-Path $filename) {
+    Write-Host "You Have Latest PPSSPP Version $filename"
 }
-7z x $filename -o"temp" -y
-        Copy-Item  -Path "temp/ppsspp/*" -Destination $targetFolder -Recurse -force
-        Remove-Item $filename -Recurse -Force
-        Remove-Item temp -Recurse -Force
-
+else {
+    Remove-Item ppsspp*windows-amd64.7z -Recurse -Force
+    Invoke-WebRequest -Uri "$downloadUrl" -OutFile "$filename" -Headers @{
+        "Referer"    = "https://buildbot.orphis.net";
+        "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36"
+    }
+    7z x $filename -o"temp" -y
+    Copy-Item  -Path "temp/ppsspp/*" -Destination $targetFolder -Recurse -force
+    Remove-Item temp -Recurse -Force
+}
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating PPSSPP Finished"
 Write-Host "##############################################################################################"
@@ -186,12 +189,27 @@ Write-Host "                                        Updating RetroArch"
 Write-Host "##############################################################################################"
 
 # Specify the target folder
-$targetFolder = 'D:\Retro Gaming\Emulators\RetroArch'
-$downloadUrl = "https://buildbot.libretro.com/nightly/windows/x86_64/RetroArch.7z"
-Invoke-WebRequest -Uri "$downloadUrl" -OutFile "RetroArch.7z"
-7z x RetroArch.7z -o"$targetFolder" -y
-Remove-Item RetroArch.7z -Recurse -Force
-
+$targetFolder = Join-Path (Get-Location) 'RetroArch'
+# Send a GET request to the URL
+$response = Invoke-RestMethod -Uri "https://buildbot.libretro.com/nightly/windows/x86_64/"
+# Convert the response to a string
+$responseString = $response.ToString()
+# Define the pattern to match the RetroArch.7z file and its last modified date
+$pattern = 'href="/nightly/windows/x86_64/RetroArch.7z">RetroArch.7z</a></td><td class="fb-d">(\d{4}-\d{2}-\d{2}) \d{2}:\d{2}</td>'
+# Use regex to find the match
+if ($responseString -match $pattern) {
+    $lastModifiedDate = $Matches[1]
+}
+$filename = "RetroArch-$lastModifiedDate.7z"
+if (Test-Path $filename) {
+    Write-Host "You Have Latest RetroArch Version $filename"
+}
+else {
+    Remove-Item RetroArch*.7z -Recurse -Force
+    $downloadUrl = "https://buildbot.libretro.com/nightly/windows/x86_64/RetroArch.7z"
+    Invoke-WebRequest -Uri "$downloadUrl" -OutFile "$filename"
+    7z x $filename -o"$targetFolder" -y
+}
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating RetroArch Finished"
 Write-Host "##############################################################################################"
@@ -203,7 +221,7 @@ Write-Host "                                        Updating Ryujinx"
 Write-Host "##############################################################################################"
 
 # Specify the target folder
-$targetFolder = 'D:\Retro Gaming\Emulators\Ryujinx\'
+$targetFolder = Join-Path (Get-Location) 'Ryujinx'
 
 # Get the latest release information from the GitHub API
 $releasesInfo = Invoke-RestMethod -Uri "https://api.github.com/repos/Ryujinx/release-channel-master/releases"
@@ -214,13 +232,17 @@ $latestRelease = $releasesInfo[0]
 # Get the first asset URL from the latest release
 $assetUrl = $latestRelease.assets[7].browser_download_url
 $filename = [System.IO.Path]::GetFileName($assetUrl)
-# Download the file using the extracted URL
-Invoke-WebRequest -Uri $assetUrl -OutFile $filename
-7z x $filename -o"temp" -y
-Copy-Item  -Path "temp/publish/*" -Destination $targetFolder -Recurse -force
-Remove-Item $filename -Recurse -Force
-Remove-Item temp -Recurse -Force
-
+if (Test-Path $filename) {
+    Write-Host "You Have Latest Ryujinx Version $filename"
+}
+else {
+    Remove-Item *ryujinx*win_x64.zip -Recurse -Force
+    # Download the file using the extracted URL
+    Invoke-WebRequest -Uri $assetUrl -OutFile $filename
+    7z x $filename -o"temp" -y
+    Copy-Item  -Path "temp/publish/*" -Destination $targetFolder -Recurse -force
+    Remove-Item temp -Recurse -Force
+}
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating Ryujinx Finished"
 Write-Host "##############################################################################################"
@@ -232,28 +254,26 @@ Write-Host "                                        Updating XEMU"
 Write-Host "##############################################################################################"
 
 # Specify the target folder
-$targetFolder = 'D:\Retro Gaming\Emulators\XBOX'
+$targetFolder = Join-Path (Get-Location) 'XEMU'
 
 # Get the latest release information from the GitHub API
 $response = Invoke-RestMethod -Uri "https://api.github.com/repos/xemu-project/xemu/releases/latest"
-
+$version = $response.tag_name
 # Check if the response contains the necessary information
 if ($response.assets) {
-        # Extract the download URL and filename from the asset
-        $downloadUrl = $response.assets[8].browser_download_url
-        $filename = [System.IO.Path]::GetFileName($downloadUrl)
-
-        # If the file already exists, remove it before downloading the updated version
-        if (Test-Path $filename) {
-            Remove-Item $filename -Force
-        }
-
+    # Extract the download URL and filename from the asset
+    $downloadUrl = $response.assets[8].browser_download_url
+    $filename = "xemu-win-release-$version.zip"
+    # If the file already exists, remove it before downloading the updated version
+    if (Test-Path $filename) {
+        Write-Host "You Have Latest XEMU Version $filename"
+    }
+    else {
+        Remove-Item xemu-win-release*.zip -Recurse -Force
         # Download the file using the extracted URL
         Invoke-WebRequest -Uri $downloadUrl -OutFile $filename
         7z x $filename -o"$targetFolder" -y
-        Remove-Item $filename -Recurse -Force
-} else {
-    Write-Host "Failed to retrieve XEMU download URL from the GitHub API."
+    }
 }
 
 Write-Host "##############################################################################################"
@@ -267,24 +287,54 @@ Write-Host "                                        Updating Dolphin"
 Write-Host "##############################################################################################"
 
 # Specify the target folder
-$targetFolder = 'D:\Retro Gaming\Emulators\Dolphin'
+$targetFolder = Join-Path (Get-Location) 'Dolphin'
 
-# Send a web request to the URL
-$request = Invoke-WebRequest -Uri "https://dolphin-emu.org/download/"
+# Download the webpage content
+$page = Invoke-WebRequest -Uri "https://dolphin-emu.org/download/"
 
-# Extract the download link from the response
-$downloadLink = $request.Links | Where-Object href -like '*21*x64.7z' | Select-Object -First 1 | Select-Object -ExpandProperty href
+# Convert the Content to a string
+$content = $page.Content
 
+# Find the index of the div with id "download-dev"
+$index = $content.IndexOf('id="download-dev"')
+
+# If the div was found
+if ($index -ne -1) {
+    # Extract the part of the content after the div
+    $contentAfterDiv = $content.Substring($index)
+
+    # Find the index of the first download link for Windows x64
+    $linkIndex = $contentAfterDiv.IndexOf('<a href="https://dl.dolphin-emu.org/builds/')
+
+    # If the link was found
+    if ($linkIndex -ne -1) {
+        # Extract the part of the content after the link
+        $contentAfterLink = $contentAfterDiv.Substring($linkIndex)
+
+        # Find the end of the link
+        $endIndex = $contentAfterLink.IndexOf('" class="btn always-ltr btn-info win"><i class="icon-download-alt"></i> Windows x64</a>')
+
+        # If the end of the link was found
+        if ($endIndex -ne -1) {
+            # Extract the link
+            $link = $contentAfterLink.Substring(0, $endIndex)
+            $downloadLink = $link.Replace('<a href="', '')
+        }
+    }
+}
 # Output the version number
 $filename = [System.IO.Path]::GetFileName($downloadLink)
-
-# Download the file using the extracted URL
-Invoke-WebRequest -Uri "$downloadLink" -OutFile $filename
-7z x $filename -o"temp" -y
-Copy-Item  -Path "temp/Dolphin-x64/*" -Destination $targetFolder -Recurse -force
-Remove-Item $filename -Recurse -Force
-Remove-Item temp -Recurse -Force
-
+if (Test-Path $filename) {
+    Write-Host "You Have Latest Dolphin Version $filename"
+}
+else {
+    Remove-Item dolphin-master*x64.7z -Recurse -Force
+    # Download the file using the extracted URL
+    Invoke-WebRequest -Uri "$downloadLink" -OutFile $filename
+    7z x $filename -o"temp" -y
+    Copy-Item  -Path "temp/Dolphin-x64/*" -Destination $targetFolder -Recurse -force
+    Remove-Item temp -Recurse -Force
+}
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating Dolphin Finished"
 Write-Host "##############################################################################################"
