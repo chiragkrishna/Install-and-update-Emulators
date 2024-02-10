@@ -25,14 +25,14 @@ if ($response.assets) {
         $filename = [System.IO.Path]::GetFileName($downloadUrl)
 
         # If the file already exists, remove it before downloading the updated version
-        if (Test-Path $filename) {
+        if (Test-Path downloads/$filename) {
             Write-Host "You Have Latest YUZU Version $filename"
         }
         else {
-            Remove-Item yuzu-windows-msvc*.7z -Recurse -Force
+            Remove-Item downloads/yuzu-windows-msvc*.7z -Recurse -Force
             # Download the file using the extracted URL
-            Invoke-WebRequest -Uri $downloadUrl -OutFile $filename
-            7z x $filename -o"temp" -y
+            Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
+            7z x downloads/$filename -o"temp" -y
             Copy-Item  -Path "temp/yuzu-windows-msvc/*" -Destination $targetFolder -Recurse -force
             Remove-Item temp -Recurse -Force
             Remove-Item yuzu/yuzu-windows-msvc-source-*.tar.xz -Recurse -Force
@@ -64,14 +64,14 @@ if ($response.assets) {
     $filename = [System.IO.Path]::GetFileName($downloadUrl)
 
     # If the file already exists, remove it before downloading the updated version
-    if (Test-Path $filename) {
+    if (Test-Path downloads/$filename) {
         Write-Host "You Have Latest RPCS3 Version $filename"
     }
     else {
-        Remove-Item rpcs3*.win64.7z -Recurse -Force
+        Remove-Item downloads/rpcs3*.win64.7z -Recurse -Force
         # Download the file using the extracted URL
-        Invoke-WebRequest -Uri $downloadUrl -OutFile $filename
-        7z x $filename -o"$targetFolder" -y
+        Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
+        7z x downloads/$filename -o"$targetFolder" -y
     }
 }
 Write-Host "##############################################################################################"
@@ -93,14 +93,14 @@ $response = Invoke-RestMethod -Uri $url -Headers $headers
 $date = Get-Date $response.created_at -Format "dd/MM/yyyy"
 $filename = "duckstation-windows-x64-release-$date.zip"
 
-if (Test-Path $filename) {
+if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest DuckStation Version $filename"
 }
 else {
-    Remove-Item duckstation-windows-x64-release*.zip -Recurse -Force
+    Remove-Item downloads/duckstation-windows-x64-release*.zip -Recurse -Force
     # Download the file using the extracted URL
-    Invoke-WebRequest -Uri https://github.com/stenzek/duckstation/releases/download/latest/duckstation-windows-x64-release.zip -OutFile $filename
-    7z x $filename -o"$targetFolder" -y
+    Invoke-WebRequest -Uri https://github.com/stenzek/duckstation/releases/download/latest/duckstation-windows-x64-release.zip -OutFile downloads/$filename
+    7z x downloads/$filename -o"$targetFolder" -y
 }
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating DuckStation Finished"
@@ -123,14 +123,14 @@ $latestRelease = $response[0]
 $assetUrl = $latestRelease.assets[4].browser_download_url
 $filename = [System.IO.Path]::GetFileName($assetUrl)
 # If the file already exists, remove it before downloading the updated version
-if (Test-Path $filename) {
+if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest PCSX2 Version $filename"
 }
 else {
-    Remove-Item pcsx2*windows-x64-Qt.7z -Recurse -Force
+    Remove-Item downloads/pcsx2*windows-x64-Qt.7z -Recurse -Force
     # Download the file using the extracted URL
-    Invoke-WebRequest -Uri $assetUrl -OutFile $filename
-    7z x $filename -o"$targetFolder" -y
+    Invoke-WebRequest -Uri $assetUrl -OutFile downloads/$filename
+    7z x downloads/$filename -o"$targetFolder" -y
 }
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating PCSX2 Finished"
@@ -165,16 +165,16 @@ $revision = $version.Matches.Groups[1].Value
 $downloadUrl = "https://buildbot.orphis.net$cleanedUrl"
 $filename = "ppsspp-$revision-windows-amd64.7z"
 
-if (Test-Path $filename) {
+if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest PPSSPP Version $filename"
 }
 else {
-    Remove-Item ppsspp*windows-amd64.7z -Recurse -Force
-    Invoke-WebRequest -Uri "$downloadUrl" -OutFile "$filename" -Headers @{
+    Remove-Item downloads/ppsspp*windows-amd64.7z -Recurse -Force
+    Invoke-WebRequest -Uri "$downloadUrl" -OutFile downloads/"$filename" -Headers @{
         "Referer"    = "https://buildbot.orphis.net";
         "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36"
     }
-    7z x $filename -o"temp" -y
+    7z x downloads/$filename -o"temp" -y
     Copy-Item  -Path "temp/ppsspp/*" -Destination $targetFolder -Recurse -force
     Remove-Item temp -Recurse -Force
 }
@@ -201,14 +201,14 @@ if ($responseString -match $pattern) {
     $lastModifiedDate = $Matches[1]
 }
 $filename = "RetroArch-$lastModifiedDate.7z"
-if (Test-Path $filename) {
+if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest RetroArch Version $filename"
 }
 else {
-    Remove-Item RetroArch*.7z -Recurse -Force
+    Remove-Item downloads/RetroArch*.7z -Recurse -Force
     $downloadUrl = "https://buildbot.libretro.com/nightly/windows/x86_64/RetroArch.7z"
-    Invoke-WebRequest -Uri "$downloadUrl" -OutFile "$filename"
-    7z x $filename -o"$targetFolder" -y
+    Invoke-WebRequest -Uri "$downloadUrl" -OutFile "downloads/$filename"
+    7z x downloads/$filename -o"$targetFolder" -y
 }
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating RetroArch Finished"
@@ -232,14 +232,14 @@ $latestRelease = $releasesInfo[0]
 # Get the first asset URL from the latest release
 $assetUrl = $latestRelease.assets[7].browser_download_url
 $filename = [System.IO.Path]::GetFileName($assetUrl)
-if (Test-Path $filename) {
+if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest Ryujinx Version $filename"
 }
 else {
-    Remove-Item *ryujinx*win_x64.zip -Recurse -Force
+    Remove-Item downloads/*ryujinx*win_x64.zip -Recurse -Force
     # Download the file using the extracted URL
-    Invoke-WebRequest -Uri $assetUrl -OutFile $filename
-    7z x $filename -o"temp" -y
+    Invoke-WebRequest -Uri $assetUrl -OutFile downloads/$filename
+    7z x downloads/$filename -o"temp" -y
     Copy-Item  -Path "temp/publish/*" -Destination $targetFolder -Recurse -force
     Remove-Item temp -Recurse -Force
 }
@@ -265,14 +265,14 @@ if ($response.assets) {
     $downloadUrl = $response.assets[8].browser_download_url
     $filename = "xemu-win-release-$version.zip"
     # If the file already exists, remove it before downloading the updated version
-    if (Test-Path $filename) {
+    if (Test-Path downloads/$filename) {
         Write-Host "You Have Latest XEMU Version $filename"
     }
     else {
-        Remove-Item xemu-win-release*.zip -Recurse -Force
+        Remove-Item downloads/xemu-win-release*.zip -Recurse -Force
         # Download the file using the extracted URL
-        Invoke-WebRequest -Uri $downloadUrl -OutFile $filename
-        7z x $filename -o"$targetFolder" -y
+        Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
+        7z x downloads/$filename -o"$targetFolder" -y
     }
 }
 
@@ -324,14 +324,14 @@ if ($index -ne -1) {
 }
 # Output the version number
 $filename = [System.IO.Path]::GetFileName($downloadLink)
-if (Test-Path $filename) {
+if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest Dolphin Version $filename"
 }
 else {
-    Remove-Item dolphin-master*x64.7z -Recurse -Force
+    Remove-Item downloads/dolphin-master*x64.7z -Recurse -Force
     # Download the file using the extracted URL
-    Invoke-WebRequest -Uri "$downloadLink" -OutFile $filename
-    7z x $filename -o"temp" -y
+    Invoke-WebRequest -Uri "$downloadLink" -OutFile downloads/$filename
+    7z x downloads/$filename -o"temp" -y
     Copy-Item  -Path "temp/Dolphin-x64/*" -Destination $targetFolder -Recurse -force
     Remove-Item temp -Recurse -Force
 }
