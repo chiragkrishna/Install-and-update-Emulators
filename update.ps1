@@ -288,16 +288,23 @@ $releasesInfo = Invoke-RestMethod -Uri "https://api.github.com/repos/Ryujinx/rel
 # Get the first release (assumes releases are sorted by date, modify as needed)
 $latestRelease = $releasesInfo[0]
 
-# Get the first asset URL from the latest release
-$assetUrl = $latestRelease.assets[7].browser_download_url
-$filename = [System.IO.Path]::GetFileName($assetUrl)
+# Check if the response contains the necessary information
+if ($latestRelease.assets) {
+    # Filter assets for the one with the desired name pattern (e.g., contains "windows" and ".7z")
+    $windowsAsset = $latestRelease.assets | Where-Object { $_.name -like '*ava*' -and $_.name -like '*win_x64.zip' }
+}
+if ($windowsAsset) {
+    # Extract the download URL and filename from the asset
+    $downloadUrl = $windowsAsset.browser_download_url
+    $filename = [System.IO.Path]::GetFileName($downloadUrl)
+}
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest Ryujinx Version $filename"
 }
 else {
     Remove-Item downloads/*ryujinx*win_x64.zip -Recurse -Force
     # Download the file using the extracted URL
-    Invoke-WebRequest -Uri $assetUrl -OutFile downloads/$filename
+    Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
     7z x downloads/$filename -o"temp" -y
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Extraction successful."
