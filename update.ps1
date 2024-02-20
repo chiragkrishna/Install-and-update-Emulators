@@ -91,7 +91,7 @@ if ($response.assets) {
         Write-Host "You Have Latest RPCS3 Version $filename"
     }
     else {
-        Remove-Item downloads/rpcs3*.win64.7z -Recurse -Force
+        Remove-Item downloads/rpcs3*win64.7z -Recurse -Force
         # Download the file using the extracted URL
         Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
         7z x downloads/$filename -o"$targetFolder" -y
