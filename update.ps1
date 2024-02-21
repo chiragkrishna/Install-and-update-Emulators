@@ -157,25 +157,34 @@ $response = Invoke-RestMethod -Uri "https://api.github.com/repos/PCSX2/pcsx2/rel
 
 # Check if the response contains the necessary information
 $latestRelease = $response[0]
-$assetUrl = $latestRelease.assets[4].browser_download_url
-$filename = [System.IO.Path]::GetFileName($assetUrl)
-# If the file already exists, remove it before downloading the updated version
-if (Test-Path downloads/$filename) {
-    Write-Host "You Have Latest PCSX2 Version $filename"
-}
-else {
-    Remove-Item downloads/pcsx2*windows-x64-Qt.7z -Recurse -Force
-    # Download the file using the extracted URL
-    Invoke-WebRequest -Uri $assetUrl -OutFile downloads/$filename
-    7z x downloads/$filename -o"$targetFolder" -y
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "Extraction successful."
+# Check if the response contains the necessary information
+if ($latestRelease.assets) {
+    $windowsAsset = $response.assets | Where-Object { $_.name -like '*windows*' -and $_.name -like '*Qt.7z' }
+
+    if ($windowsAsset) {
+        # Extract the download URL and filename from the asset
+        $downloadUrl = $windowsAsset.browser_download_url[0]
+        $filename = [System.IO.Path]::GetFileName($downloadUrl)
+        # If the file already exists, remove it before downloading the updated version
+        if (Test-Path downloads/$filename) {
+            Write-Host "You Have Latest PCSX2 Version $filename"
+        }
+        else {
+            Remove-Item downloads/pcsx2*windows-x64-Qt.7z -Recurse -Force
+            # Download the file using the extracted URL
+            Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
+            7z x downloads/$filename -o"$targetFolder" -y
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "Extraction successful."
+            }
+            else {
+                Write-Host "Extraction failed."
+                Remove-Item downloads/$filename -Recurse -Force
+            }
+        }
     }
-    else {
-        Write-Host "Extraction failed."
-        Remove-Item downloads/$filename -Recurse -Force
-    }
 }
+
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating PCSX2 Finished"
 Write-Host "##############################################################################################"
@@ -333,26 +342,24 @@ $targetFolder = Join-Path (Get-Location) 'XEMU'
 $response = Invoke-RestMethod -Uri "https://api.github.com/repos/xemu-project/xemu/releases/latest"
 $version = $response.tag_name
 # Check if the response contains the necessary information
-if ($response.assets) {
-    # Extract the download URL and filename from the asset
-    $downloadUrl = $response.assets[8].browser_download_url
-    $filename = "xemu-win-release-$version.zip"
-    # If the file already exists, remove it before downloading the updated version
-    if (Test-Path downloads/$filename) {
-        Write-Host "You Have Latest XEMU Version $filename"
+# Extract the download URL and filename from the asset
+$downloadUrl = "https://github.com/xemu-project/xemu/releases/download/$version/xemu-win-release.zip"
+$filename = "xemu-win-release-$version.zip"
+# If the file already exists, remove it before downloading the updated version
+if (Test-Path downloads/$filename) {
+    Write-Host "You Have Latest XEMU Version $filename"
+}
+else {
+    Remove-Item downloads/xemu-win-release*.zip -Recurse -Force
+    # Download the file using the extracted URL
+    Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
+    7z x downloads/$filename -o"$targetFolder" -y
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Extraction successful."
     }
     else {
-        Remove-Item downloads/xemu-win-release*.zip -Recurse -Force
-        # Download the file using the extracted URL
-        Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
-        7z x downloads/$filename -o"$targetFolder" -y
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "Extraction successful."
-        }
-        else {
-            Write-Host "Extraction failed."
-            Remove-Item downloads/$filename -Recurse -Force
-        }
+        Write-Host "Extraction failed."
+        Remove-Item downloads/$filename -Recurse -Force
     }
 }
 
