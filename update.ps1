@@ -7,10 +7,7 @@ $currentDirectory = Get-Location
 $newDirectory = Join-Path -Path $currentDirectory -ChildPath "downloads"
 
 # Check if the directory exists
-if (Test-Path -Path $newDirectory) {
-    Write-Output "The 'downloads' folder already exists in the current directory."
-}
-else {
+if (-not (Test-Path -Path $newDirectory)) {
     # Create the new directory
     New-Item -ItemType Directory -Path $newDirectory | Out-Null
     Write-Output "The 'downloads' folder has been created in the current directory."
