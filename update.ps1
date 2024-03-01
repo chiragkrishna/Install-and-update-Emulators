@@ -17,6 +17,19 @@ if (-not (Test-Path -Path $newDirectory)) {
 
 # yuzu update
 
+cls
+Write-Host "##############################################################################################"
+Write-Host "1) yuzu - updating...""
+Write-Host "2) RPCS3"
+Write-Host "3) DuckStation"
+Write-Host "4) PCSX2"
+Write-Host "5) PPSSPP"
+Write-Host "6) RetroArch"
+Write-Host "7) Ryujinx"
+Write-Host "8) XEMU"
+Write-Host "9) Dolphin"
+Write-Host "##############################################################################################"
+
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating YUZU"
 Write-Host "##############################################################################################"
@@ -67,6 +80,19 @@ Write-Host "####################################################################
 
 # RPCS3 update
 
+cls
+Write-Host "##############################################################################################"
+Write-Host "1) yuzu - ✓"
+Write-Host "2) RPCS3 - updating..."
+Write-Host "3) DuckStation"
+Write-Host "4) PCSX2"
+Write-Host "5) PPSSPP"
+Write-Host "6) RetroArch"
+Write-Host "7) Ryujinx"
+Write-Host "8) XEMU"
+Write-Host "9) Dolphin"
+Write-Host "##############################################################################################"
+
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating RPCS3"
 Write-Host "##############################################################################################"
@@ -107,6 +133,19 @@ Write-Host "####################################################################
 
 # DuckStation update
 
+cls
+Write-Host "##############################################################################################"
+Write-Host "1) yuzu - ✓"
+Write-Host "2) RPCS3 - ✓"
+Write-Host "3) DuckStation - updating..."
+Write-Host "4) PCSX2"
+Write-Host "5) PPSSPP"
+Write-Host "6) RetroArch"
+Write-Host "7) Ryujinx"
+Write-Host "8) XEMU"
+Write-Host "9) Dolphin"
+Write-Host "##############################################################################################"
+
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating DuckStation"
 Write-Host "##############################################################################################"
@@ -141,6 +180,19 @@ Write-Host "                                        Updating DuckStation Finishe
 Write-Host "##############################################################################################"
 
 # PCSX2 update
+
+cls
+Write-Host "##############################################################################################"
+Write-Host "1) yuzu - ✓"
+Write-Host "2) RPCS3 - ✓"
+Write-Host "3) DuckStation - ✓"
+Write-Host "4) PCSX2 - updating..."
+Write-Host "5) PPSSPP"
+Write-Host "6) RetroArch"
+Write-Host "7) Ryujinx"
+Write-Host "8) XEMU"
+Write-Host "9) Dolphin"
+Write-Host "##############################################################################################"
 
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating PCSX2"
@@ -187,6 +239,19 @@ Write-Host "                                        Updating PCSX2 Finished"
 Write-Host "##############################################################################################"
 
 # PPSSPP update
+
+cls
+Write-Host "##############################################################################################"
+Write-Host "1) yuzu - ✓"
+Write-Host "2) RPCS3 - ✓"
+Write-Host "3) DuckStation - ✓"
+Write-Host "4) PCSX2 - ✓"
+Write-Host "5) PPSSPP - updating..."
+Write-Host "6) RetroArch"
+Write-Host "7) Ryujinx"
+Write-Host "8) XEMU"
+Write-Host "9) Dolphin"
+Write-Host "##############################################################################################"
 
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating PPSSPP"
@@ -242,6 +307,19 @@ Write-Host "####################################################################
 
 # RetroArch update
 
+cls
+Write-Host "##############################################################################################"
+Write-Host "1) yuzu - ✓"
+Write-Host "2) RPCS3 - ✓"
+Write-Host "3) DuckStation - ✓"
+Write-Host "4) PCSX2 - ✓"
+Write-Host "5) PPSSPP - ✓"
+Write-Host "6) RetroArch - updating..."
+Write-Host "7) Ryujinx"
+Write-Host "8) XEMU"
+Write-Host "9) Dolphin"
+Write-Host "##############################################################################################"
+
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating RetroArch"
 Write-Host "##############################################################################################"
@@ -280,6 +358,19 @@ Write-Host "                                        Updating RetroArch Finished"
 Write-Host "##############################################################################################"
 
 # Ryujinx update
+
+cls
+Write-Host "##############################################################################################"
+Write-Host "1) yuzu - ✓"
+Write-Host "2) RPCS3 - ✓"
+Write-Host "3) DuckStation - ✓"
+Write-Host "4) PCSX2 - ✓"
+Write-Host "5) PPSSPP - ✓"
+Write-Host "6) RetroArch - ✓"
+Write-Host "7) Ryujinx - updating..."
+Write-Host "8) XEMU"
+Write-Host "9) Dolphin"
+Write-Host "##############################################################################################"
 
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating Ryujinx"
@@ -328,6 +419,19 @@ Write-Host "####################################################################
 
 # XEMU update
 
+cls
+Write-Host "##############################################################################################"
+Write-Host "1) yuzu - ✓"
+Write-Host "2) RPCS3 - ✓"
+Write-Host "3) DuckStation - ✓"
+Write-Host "4) PCSX2 - ✓"
+Write-Host "5) PPSSPP - ✓"
+Write-Host "6) RetroArch - ✓"
+Write-Host "7) Ryujinx - ✓"
+Write-Host "8) XEMU - updating..."
+Write-Host "9) Dolphin"
+Write-Host "##############################################################################################"
+
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating XEMU"
 Write-Host "##############################################################################################"
@@ -365,6 +469,19 @@ Write-Host "                                        Updating XEMU Finished"
 Write-Host "##############################################################################################"
 
 # Dolphin update
+
+cls
+Write-Host "##############################################################################################"
+Write-Host "1) yuzu - ✓"
+Write-Host "2) RPCS3 - ✓"
+Write-Host "3) DuckStation - ✓"
+Write-Host "4) PCSX2 - ✓"
+Write-Host "5) PPSSPP - ✓"
+Write-Host "6) RetroArch - ✓"
+Write-Host "7) Ryujinx - ✓"
+Write-Host "8) XEMU - ✓"
+Write-Host "9) Dolphin - updating..."
+Write-Host "##############################################################################################"
 
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating Dolphin"
@@ -428,4 +545,18 @@ else {
 }
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating Dolphin Finished"
+Write-Host "##############################################################################################"
+
+cls
+Write-Host "##############################################################################################"
+Write-Host "1) yuzu - ✓"
+Write-Host "2) RPCS3 - ✓"
+Write-Host "3) DuckStation - ✓"
+Write-Host "4) PCSX2 - ✓"
+Write-Host "5) PPSSPP - ✓"
+Write-Host "6) RetroArch - ✓"
+Write-Host "7) Ryujinx - ✓"
+Write-Host "8) XEMU - ✓"
+Write-Host "9) Dolphin - ✓"
+Write-Host "All Emulators Updated"
 Write-Host "##############################################################################################"
