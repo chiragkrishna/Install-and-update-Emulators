@@ -19,7 +19,7 @@ if (-not (Test-Path -Path $newDirectory)) {
 
 cls
 Write-Host "##############################################################################################"
-Write-Host "1) yuzu - updating...""
+Write-Host "1) yuzu - updating..."
 Write-Host "2) RPCS3"
 Write-Host "3) DuckStation"
 Write-Host "4) PCSX2"
