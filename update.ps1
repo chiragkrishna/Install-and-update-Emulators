@@ -55,7 +55,7 @@ if ($response.assets) {
         # If the file already exists, remove it before downloading the updated version
         if (Test-Path downloads/$filename) {
             Write-Host "You Have Latest YUZU Version $filename"
-            $yuzudone = "You Already Have Latest $filename"
+            $yuzudone = "`e[40mYou Already Have Latest $filename`e[0m"
         }
         else {
             Remove-Item downloads/yuzu-windows-msvc*.7z -Recurse -Force
@@ -72,6 +72,7 @@ if ($response.assets) {
             else {
                 Write-Host "Extraction failed."
                 Remove-Item downloads/$filename -Recurse -Force
+                $yuzudone = "`e[31mextraction failed`e[0m"
             }
         }
     } 
@@ -118,7 +119,7 @@ if ($response.assets) {
     # If the file already exists, remove it before downloading the updated version
     if (Test-Path downloads/$filename) {
         Write-Host "You Have Latest RPCS3 Version $filename"
-        $RPCS3done = "You Already Have Latest $filename"
+        $RPCS3done = "`e[40mYou Already Have Latest $filename`e[0m"
     }
     else {
         Remove-Item downloads/rpcs3*win64.7z -Recurse -Force
@@ -132,6 +133,7 @@ if ($response.assets) {
         else {
             Write-Host "Extraction failed."
             Remove-Item downloads/$filename -Recurse -Force
+            $RPCS3done = "`e[31mextraction failed`e[0m"
         }
     }
 }
@@ -170,7 +172,7 @@ $filename = "duckstation-windows-x64-release-$date.zip"
 
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest DuckStation Version $filename"
-    $DuckStationdone = "You Already Have Latest $filename"
+    $DuckStationdone = "`e[40mYou Already Have Latest $filename`e[0m"
 }
 else {
     Remove-Item downloads/duckstation-windows-x64-release*.zip -Recurse -Force
@@ -184,6 +186,7 @@ else {
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
+        $DuckStationdone = "`e[31mextraction failed`e[0m"
     }
 }
 Write-Host "##############################################################################################"
@@ -229,7 +232,7 @@ if ($latestRelease.assets) {
         # If the file already exists, remove it before downloading the updated version
         if (Test-Path downloads/$filename) {
             Write-Host "You Have Latest PCSX2 Version $filename"
-            $PCSX2done = "You Already Have Latest $filename"
+            $PCSX2done = "`e[40mYou Already Have Latest $filename`e[0m"
         }
         else {
             Remove-Item downloads/pcsx2*windows-x64-Qt.7z -Recurse -Force
@@ -243,6 +246,7 @@ if ($latestRelease.assets) {
             else {
                 Write-Host "Extraction failed."
                 Remove-Item downloads/$filename -Recurse -Force
+                $PCSX2done = "`e[31mextraction failed`e[0m"
             }
         }
     }
@@ -297,7 +301,7 @@ $filename = "ppsspp-$revision-windows-amd64.7z"
 
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest PPSSPP Version $filename"
-    $PPSSPPdone = "You Already Have Latest $filename"
+    $PPSSPPdone = "`e[40mYou Already Have Latest $filename`e[0m"
 }
 else {
     Remove-Item downloads/ppsspp*windows-amd64.7z -Recurse -Force
@@ -316,6 +320,7 @@ else {
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
+        $PPSSPPdone = "`e[31mextraction failed`e[0m"
     }
 }
 Write-Host "##############################################################################################"
@@ -357,7 +362,7 @@ if ($responseString -match $pattern) {
 $filename = "RetroArch-$lastModifiedDate.7z"
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest RetroArch Version $filename"
-    $RetroArchdone = "You Already Have Latest $filename"
+    $RetroArchdone = "`e[40mYou Already Have Latest $filename`e[0m"
 }
 else {
     Remove-Item downloads/RetroArch*.7z -Recurse -Force
@@ -371,6 +376,7 @@ else {
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
+        $RetroArchdone = "`e[31mextraction failed`e[0m"
     }
 }
 Write-Host "##############################################################################################"
@@ -418,7 +424,7 @@ if ($windowsAsset) {
 }
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest Ryujinx Version $filename"
-    $Ryujinxdone = "You Already Have Latest $filename"
+    $Ryujinxdone = "`e[40mYou Already Have Latest $filename`e[0m"
 }
 else {
     Remove-Item downloads/*ryujinx*win_x64.zip -Recurse -Force
@@ -434,6 +440,7 @@ else {
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
+        $Ryujinxdone = "`e[31mextraction failed`e[0m"
     }
 }
 Write-Host "##############################################################################################"
@@ -473,7 +480,7 @@ $filename = "xemu-win-release-$version.zip"
 # If the file already exists, remove it before downloading the updated version
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest XEMU Version $filename"
-    $XEMUdone = "You Already Have Latest $filename"
+    $XEMUdone = "`e[40mYou Already Have Latest $filename`e[0m"
 }
 else {
     Remove-Item downloads/xemu-win-release*.zip -Recurse -Force
@@ -487,6 +494,7 @@ else {
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
+        $XEMUdone = "`e[31mextraction failed`e[0m"
     }
 }
 
@@ -554,7 +562,7 @@ if ($index -ne -1) {
 $filename = [System.IO.Path]::GetFileName($downloadLink)
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest Dolphin Version $filename"
-    $Dolphindone = "You Already Have Latest $filename"
+    $Dolphindone = "`e[40mYou Already Have Latest $filename`e[0m"
 }
 else {
     Remove-Item downloads/dolphin-master*x64.7z -Recurse -Force
@@ -570,6 +578,7 @@ else {
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
+        $Dolphindone = "`e[31mextraction failed`e[0m"
     }
 }
 Write-Host "##############################################################################################"
@@ -589,5 +598,5 @@ Write-Host "7) Ryujinx - $Ryujinxdone" -ForegroundColor Green
 Write-Host "8) XEMU - $XEMUdone" -ForegroundColor Green
 Write-Host "9) Dolphin - $Dolphindone" -ForegroundColor Green
 Write-Host ""
-Write-Host "All Emulators Updated" -ForegroundColor Magenta
+Write-Host "Emulators Updated" -ForegroundColor Magenta
 Write-Host "##############################################################################################" -ForegroundColor Blue
