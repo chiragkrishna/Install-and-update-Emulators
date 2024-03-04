@@ -55,6 +55,7 @@ if ($response.assets) {
         # If the file already exists, remove it before downloading the updated version
         if (Test-Path downloads/$filename) {
             Write-Host "You Have Latest YUZU Version $filename"
+            $yuzudone = "You Already Have Latest $filename"
         }
         else {
             Remove-Item downloads/yuzu-windows-msvc*.7z -Recurse -Force
@@ -66,6 +67,7 @@ if ($response.assets) {
                 Copy-Item  -Path "temp/yuzu-windows-msvc/*" -Destination $targetFolder -Recurse -force
                 Remove-Item temp -Recurse -Force
                 Remove-Item yuzu/yuzu-windows-msvc-source-*.tar.xz -Recurse -Force
+                $yuzudone = "Updated To $filename ✓"
             }
             else {
                 Write-Host "Extraction failed."
@@ -85,7 +87,7 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - ✓" -ForegroundColor Green
+Write-Host "1) yuzu - $yuzudone" -ForegroundColor Green
 Write-Host "2) RPCS3 - updating..." -ForegroundColor Red
 Write-Host "3) DuckStation" -ForegroundColor Black
 Write-Host "4) PCSX2" -ForegroundColor Black
@@ -116,6 +118,7 @@ if ($response.assets) {
     # If the file already exists, remove it before downloading the updated version
     if (Test-Path downloads/$filename) {
         Write-Host "You Have Latest RPCS3 Version $filename"
+        $RPCS3done = "You Already Have Latest $filename"
     }
     else {
         Remove-Item downloads/rpcs3*win64.7z -Recurse -Force
@@ -124,6 +127,7 @@ if ($response.assets) {
         7z x downloads/$filename -o"$targetFolder" -y
         if ($LASTEXITCODE -eq 0) {
             Write-Host "Extraction successful."
+            $RPCS3done = "Updated To $filename ✓"
         }
         else {
             Write-Host "Extraction failed."
@@ -140,8 +144,8 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - ✓" -ForegroundColor Green
-Write-Host "2) RPCS3 - ✓" -ForegroundColor Green
+Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
+Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
 Write-Host "3) DuckStation - updating..." -ForegroundColor Red
 Write-Host "4) PCSX2" -ForegroundColor Black
 Write-Host "5) PPSSPP" -ForegroundColor Black
@@ -166,6 +170,7 @@ $filename = "duckstation-windows-x64-release-$date.zip"
 
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest DuckStation Version $filename"
+    $DuckStationdone = "You Already Have Latest $filename"
 }
 else {
     Remove-Item downloads/duckstation-windows-x64-release*.zip -Recurse -Force
@@ -174,6 +179,7 @@ else {
     7z x downloads/$filename -o"$targetFolder" -y
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Extraction successful."
+        $DuckStationdone = "Updated To $filename ✓"
     }
     else {
         Write-Host "Extraction failed."
@@ -189,9 +195,9 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - ✓" -ForegroundColor Green
-Write-Host "2) RPCS3 - ✓" -ForegroundColor Green
-Write-Host "3) DuckStation - ✓" -ForegroundColor Green
+Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
+Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
 Write-Host "4) PCSX2 - updating..." -ForegroundColor Red
 Write-Host "5) PPSSPP" -ForegroundColor Black
 Write-Host "6) RetroArch" -ForegroundColor Black
@@ -223,6 +229,7 @@ if ($latestRelease.assets) {
         # If the file already exists, remove it before downloading the updated version
         if (Test-Path downloads/$filename) {
             Write-Host "You Have Latest PCSX2 Version $filename"
+            $PCSX2done = "You Already Have Latest $filename"
         }
         else {
             Remove-Item downloads/pcsx2*windows-x64-Qt.7z -Recurse -Force
@@ -231,6 +238,7 @@ if ($latestRelease.assets) {
             7z x downloads/$filename -o"$targetFolder" -y
             if ($LASTEXITCODE -eq 0) {
                 Write-Host "Extraction successful."
+                $PCSX2done = "Updated To $filename ✓"
             }
             else {
                 Write-Host "Extraction failed."
@@ -249,10 +257,10 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - ✓" -ForegroundColor Green
-Write-Host "2) RPCS3 - ✓" -ForegroundColor Green
-Write-Host "3) DuckStation - ✓" -ForegroundColor Green
-Write-Host "4) PCSX2 - ✓" -ForegroundColor Green
+Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
+Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "4) PCSX2 - $PCSX2done" -ForegroundColor Green
 Write-Host "5) PPSSPP - updating..." -ForegroundColor Red
 Write-Host "6) RetroArch" -ForegroundColor Black
 Write-Host "7) Ryujinx" -ForegroundColor Black
@@ -289,6 +297,7 @@ $filename = "ppsspp-$revision-windows-amd64.7z"
 
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest PPSSPP Version $filename"
+    $PPSSPPdone = "You Already Have Latest $filename"
 }
 else {
     Remove-Item downloads/ppsspp*windows-amd64.7z -Recurse -Force
@@ -301,6 +310,7 @@ else {
         Write-Host "Extraction successful."
         Copy-Item  -Path "temp/ppsspp/*" -Destination $targetFolder -Recurse -force
         Remove-Item temp -Recurse -Force
+        $PPSSPPdone = "Updated To $filename ✓"
 
     }
     else {
@@ -317,11 +327,11 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - ✓" -ForegroundColor Green
-Write-Host "2) RPCS3 - ✓" -ForegroundColor Green
-Write-Host "3) DuckStation - ✓" -ForegroundColor Green
-Write-Host "4) PCSX2 - ✓" -ForegroundColor Green
-Write-Host "5) PPSSPP - ✓" -ForegroundColor Green
+Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
+Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "4) PCSX2 - $PCSX2done" -ForegroundColor Green
+Write-Host "5) PPSSPP - $PPSSPPdone" -ForegroundColor Green
 Write-Host "6) RetroArch - updating..." -ForegroundColor Red
 Write-Host "7) Ryujinx" -ForegroundColor Black
 Write-Host "8) XEMU" -ForegroundColor Black
@@ -347,6 +357,7 @@ if ($responseString -match $pattern) {
 $filename = "RetroArch-$lastModifiedDate.7z"
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest RetroArch Version $filename"
+    $RetroArchdone = "You Already Have Latest $filename"
 }
 else {
     Remove-Item downloads/RetroArch*.7z -Recurse -Force
@@ -355,6 +366,7 @@ else {
     7z x downloads/$filename -o"$targetFolder" -y
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Extraction successful."
+        $RetroArchdone = "Updated To $filename ✓"
     }
     else {
         Write-Host "Extraction failed."
@@ -370,12 +382,12 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - ✓" -ForegroundColor Green
-Write-Host "2) RPCS3 - ✓" -ForegroundColor Green
-Write-Host "3) DuckStation - ✓" -ForegroundColor Green
-Write-Host "4) PCSX2 - ✓"
-Write-Host "5) PPSSPP - ✓" -ForegroundColor Green
-Write-Host "6) RetroArch - ✓" -ForegroundColor Green
+Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
+Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "4) PCSX2 - $PCSX2done" -ForegroundColor Green
+Write-Host "5) PPSSPP - $PPSSPPdone" -ForegroundColor Green
+Write-Host "6) RetroArch - $RetroArchdone" -ForegroundColor Green
 Write-Host "7) Ryujinx - updating..." -ForegroundColor Red
 Write-Host "8) XEMU" -ForegroundColor Black
 Write-Host "9) Dolphin" -ForegroundColor Black
@@ -406,6 +418,7 @@ if ($windowsAsset) {
 }
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest Ryujinx Version $filename"
+    $Ryujinxdone = "You Already Have Latest $filename"
 }
 else {
     Remove-Item downloads/*ryujinx*win_x64.zip -Recurse -Force
@@ -416,6 +429,7 @@ else {
         Write-Host "Extraction successful."
         Copy-Item  -Path "temp/publish/*" -Destination $targetFolder -Recurse -force
         Remove-Item temp -Recurse -Force
+        $Ryujinxdone = "Updated To $filename ✓"
     }
     else {
         Write-Host "Extraction failed."
@@ -431,13 +445,13 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - ✓" -ForegroundColor Green
-Write-Host "2) RPCS3 - ✓" -ForegroundColor Green
-Write-Host "3) DuckStation - ✓" -ForegroundColor Green
-Write-Host "4) PCSX2 - ✓" -ForegroundColor Green
-Write-Host "5) PPSSPP - ✓" -ForegroundColor Green
-Write-Host "6) RetroArch - ✓" -ForegroundColor Green
-Write-Host "7) Ryujinx - ✓" -ForegroundColor Green
+Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
+Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "4) PCSX2 - $PCSX2done" -ForegroundColor Green
+Write-Host "5) PPSSPP - $PPSSPPdone" -ForegroundColor Green
+Write-Host "6) RetroArch - $RetroArchdone" -ForegroundColor Green
+Write-Host "7) Ryujinx - $Ryujinxdone" -ForegroundColor Green
 Write-Host "8) XEMU - updating..." -ForegroundColor red
 Write-Host "9) Dolphin" -ForegroundColor Black
 Write-Host "##############################################################################################" -ForegroundColor Blue
@@ -459,6 +473,7 @@ $filename = "xemu-win-release-$version.zip"
 # If the file already exists, remove it before downloading the updated version
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest XEMU Version $filename"
+    $XEMUdone = "You Already Have Latest $filename"
 }
 else {
     Remove-Item downloads/xemu-win-release*.zip -Recurse -Force
@@ -467,6 +482,7 @@ else {
     7z x downloads/$filename -o"$targetFolder" -y
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Extraction successful."
+        $XEMUdone = "Updated To $filename ✓"
     }
     else {
         Write-Host "Extraction failed."
@@ -483,14 +499,14 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - ✓" -ForegroundColor Green
-Write-Host "2) RPCS3 - ✓" -ForegroundColor Green
-Write-Host "3) DuckStation - ✓" -ForegroundColor Green
-Write-Host "4) PCSX2 - ✓" -ForegroundColor Green
-Write-Host "5) PPSSPP - ✓" -ForegroundColor Green
-Write-Host "6) RetroArch - ✓" -ForegroundColor Green
-Write-Host "7) Ryujinx - ✓" -ForegroundColor Green
-Write-Host "8) XEMU - ✓" -ForegroundColor Green
+Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
+Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "4) PCSX2 - $PCSX2done" -ForegroundColor Green
+Write-Host "5) PPSSPP - $PPSSPPdone" -ForegroundColor Green
+Write-Host "6) RetroArch - $RetroArchdone" -ForegroundColor Green
+Write-Host "7) Ryujinx - $Ryujinxdone" -ForegroundColor Green
+Write-Host "8) XEMU - $XEMUdone" -ForegroundColor Green
 Write-Host "9) Dolphin - updating..." -ForegroundColor Red
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
@@ -538,6 +554,7 @@ if ($index -ne -1) {
 $filename = [System.IO.Path]::GetFileName($downloadLink)
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest Dolphin Version $filename"
+    $Dolphindone = "You Already Have Latest $filename"
 }
 else {
     Remove-Item downloads/dolphin-master*x64.7z -Recurse -Force
@@ -548,6 +565,7 @@ else {
         Write-Host "Extraction successful."
         Copy-Item  -Path "temp/Dolphin-x64/*" -Destination $targetFolder -Recurse -force
         Remove-Item temp -Recurse -Force
+        $Dolphindone = "Updated To $filename ✓"
     }
     else {
         Write-Host "Extraction failed."
@@ -561,14 +579,15 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - ✓" -ForegroundColor Green
-Write-Host "2) RPCS3 - ✓" -ForegroundColor Green
-Write-Host "3) DuckStation - ✓" -ForegroundColor Green
-Write-Host "4) PCSX2 - ✓" -ForegroundColor Green
-Write-Host "5) PPSSPP - ✓" -ForegroundColor Green
-Write-Host "6) RetroArch - ✓" -ForegroundColor Green
-Write-Host "7) Ryujinx - ✓" -ForegroundColor Green
-Write-Host "8) XEMU - ✓" -ForegroundColor Green
-Write-Host "9) Dolphin - ✓" -ForegroundColor Green
+Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
+Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "4) PCSX2 - $PCSX2done" -ForegroundColor Green
+Write-Host "5) PPSSPP - $PPSSPPdone" -ForegroundColor Green
+Write-Host "6) RetroArch - $RetroArchdone" -ForegroundColor Green
+Write-Host "7) Ryujinx - $Ryujinxdone" -ForegroundColor Green
+Write-Host "8) XEMU - $XEMUdone" -ForegroundColor Green
+Write-Host "9) Dolphin - $Dolphindone" -ForegroundColor Green
+Write-Host ""
 Write-Host "All Emulators Updated" -ForegroundColor Magenta
 Write-Host "##############################################################################################" -ForegroundColor Blue
