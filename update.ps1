@@ -15,88 +15,19 @@ if (-not (Test-Path -Path $newDirectory)) {
 
 ##############################################################################################
 
-# yuzu update
-
-cls
-Write-Host "##############################################################################################"  -ForegroundColor Blue
-
-Write-Host "1) yuzu - updating..." -ForegroundColor Red
-Write-Host "2) RPCS3" -ForegroundColor Black
-Write-Host "3) DuckStation" -ForegroundColor Black
-Write-Host "4) PCSX2" -ForegroundColor Black
-Write-Host "5) PPSSPP" -ForegroundColor Black
-Write-Host "6) RetroArch" -ForegroundColor Black
-Write-Host "7) Ryujinx" -ForegroundColor Black
-Write-Host "8) XEMU" -ForegroundColor Black
-Write-Host "9) Dolphin" -ForegroundColor Black
-
-Write-Host "##############################################################################################" -ForegroundColor Blue
-
-Write-Host "##############################################################################################"
-Write-Host "                                        Updating YUZU"
-Write-Host "##############################################################################################"
-
-# Specify the target folder
-$targetFolder = Join-Path (Get-Location) 'yuzu'
-
-# Get the latest release information from the GitHub API
-$response = Invoke-RestMethod -Uri "https://api.github.com/repos/yuzu-emu/yuzu-mainline/releases/latest"
-
-# Check if the response contains the necessary information
-if ($response.assets) {
-    # Filter assets for the one with the desired name pattern (e.g., contains "windows" and ".7z")
-    $windowsAsset = $response.assets | Where-Object { $_.name -like '*windows*' -and $_.name -like '*.7z' }
-
-    if ($windowsAsset) {
-        # Extract the download URL and filename from the asset
-        $downloadUrl = $windowsAsset.browser_download_url
-        $filename = [System.IO.Path]::GetFileName($downloadUrl)
-
-        # If the file already exists, remove it before downloading the updated version
-        if (Test-Path downloads/$filename) {
-            Write-Host "You Have Latest YUZU Version $filename"
-            $yuzudone = "`e[40mYou Already Have Latest $filename`e[0m"
-        }
-        else {
-            Remove-Item downloads/yuzu-windows-msvc*.7z -Recurse -Force
-            # Download the file using the extracted URL
-            Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
-            7z x downloads/$filename -o"temp" -y
-            if ($LASTEXITCODE -eq 0) {
-                Write-Host "Extraction successful."
-                Copy-Item  -Path "temp/yuzu-windows-msvc/*" -Destination $targetFolder -Recurse -force
-                Remove-Item temp -Recurse -Force
-                Remove-Item yuzu/yuzu-windows-msvc-source-*.tar.xz -Recurse -Force
-                $yuzudone = "Updated To $filename ✓"
-            }
-            else {
-                Write-Host "Extraction failed."
-                Remove-Item downloads/$filename -Recurse -Force
-                $yuzudone = "`e[31mextraction failed`e[0m"
-            }
-        }
-    } 
-}
-
-Write-Host "##############################################################################################"
-Write-Host "                                        Updating YUZU Finished"
-Write-Host "##############################################################################################"
-
-
 # RPCS3 update
 
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - $yuzudone" -ForegroundColor Green
-Write-Host "2) RPCS3 - updating..." -ForegroundColor Red
-Write-Host "3) DuckStation" -ForegroundColor Black
-Write-Host "4) PCSX2" -ForegroundColor Black
-Write-Host "5) PPSSPP" -ForegroundColor Black
-Write-Host "6) RetroArch" -ForegroundColor Black
-Write-Host "7) Ryujinx" -ForegroundColor Black
-Write-Host "8) XEMU" -ForegroundColor Black
-Write-Host "9) Dolphin" -ForegroundColor Black
+Write-Host "1) RPCS3 - updating..." -ForegroundColor Red
+Write-Host "2) DuckStation" -ForegroundColor Black
+Write-Host "3) PCSX2" -ForegroundColor Black
+Write-Host "4) PPSSPP" -ForegroundColor Black
+Write-Host "5) RetroArch" -ForegroundColor Black
+Write-Host "6) Ryujinx" -ForegroundColor Black
+Write-Host "7) XEMU" -ForegroundColor Black
+Write-Host "8) Dolphin" -ForegroundColor Black
 
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
@@ -146,15 +77,15 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
-Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
-Write-Host "3) DuckStation - updating..." -ForegroundColor Red
-Write-Host "4) PCSX2" -ForegroundColor Black
-Write-Host "5) PPSSPP" -ForegroundColor Black
-Write-Host "6) RetroArch" -ForegroundColor Black
-Write-Host "7) Ryujinx" -ForegroundColor Black
-Write-Host "8) XEMU" -ForegroundColor Black
-Write-Host "9) Dolphin" -ForegroundColor Black
+Write-Host "1) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "2) DuckStation - updating..." -ForegroundColor Red
+Write-Host "3) PCSX2" -ForegroundColor Black
+Write-Host "4) PPSSPP" -ForegroundColor Black
+Write-Host "5) RetroArch" -ForegroundColor Black
+Write-Host "6) Ryujinx" -ForegroundColor Black
+Write-Host "7) XEMU" -ForegroundColor Black
+Write-Host "8) Dolphin" -ForegroundColor Black
+
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
 Write-Host "##############################################################################################"
@@ -198,15 +129,15 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
-Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
-Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
-Write-Host "4) PCSX2 - updating..." -ForegroundColor Red
-Write-Host "5) PPSSPP" -ForegroundColor Black
-Write-Host "6) RetroArch" -ForegroundColor Black
-Write-Host "7) Ryujinx" -ForegroundColor Black
-Write-Host "8) XEMU" -ForegroundColor Black
-Write-Host "9) Dolphin" -ForegroundColor Black
+Write-Host "1) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "3) PCSX2 - updating..." -ForegroundColor Red
+Write-Host "4) PPSSPP" -ForegroundColor Black
+Write-Host "5) RetroArch" -ForegroundColor Black
+Write-Host "6) Ryujinx" -ForegroundColor Black
+Write-Host "7) XEMU" -ForegroundColor Black
+Write-Host "8) Dolphin" -ForegroundColor Black
+
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
 Write-Host "##############################################################################################"
@@ -261,15 +192,15 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
-Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
-Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
-Write-Host "4) PCSX2 - $PCSX2done" -ForegroundColor Green
-Write-Host "5) PPSSPP - updating..." -ForegroundColor Red
-Write-Host "6) RetroArch" -ForegroundColor Black
-Write-Host "7) Ryujinx" -ForegroundColor Black
-Write-Host "8) XEMU" -ForegroundColor Black
-Write-Host "9) Dolphin" -ForegroundColor Black
+Write-Host "1) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "3) PCSX2 - $PCSX2done" -ForegroundColor Green
+Write-Host "4) PPSSPP - updating..." -ForegroundColor Red
+Write-Host "5) RetroArch" -ForegroundColor Black
+Write-Host "6) Ryujinx" -ForegroundColor Black
+Write-Host "7) XEMU" -ForegroundColor Black
+Write-Host "8) Dolphin" -ForegroundColor Black
+
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
 Write-Host "##############################################################################################"
@@ -332,15 +263,15 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
-Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
-Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
-Write-Host "4) PCSX2 - $PCSX2done" -ForegroundColor Green
-Write-Host "5) PPSSPP - $PPSSPPdone" -ForegroundColor Green
-Write-Host "6) RetroArch - updating..." -ForegroundColor Red
-Write-Host "7) Ryujinx" -ForegroundColor Black
-Write-Host "8) XEMU" -ForegroundColor Black
-Write-Host "9) Dolphin" -ForegroundColor Black
+Write-Host "1) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "3) PCSX2 - $PCSX2done" -ForegroundColor Green
+Write-Host "4) PPSSPP - $PPSSPPdone" -ForegroundColor Green
+Write-Host "5) RetroArch - updating..." -ForegroundColor Red
+Write-Host "6) Ryujinx" -ForegroundColor Black
+Write-Host "7) XEMU" -ForegroundColor Black
+Write-Host "8) Dolphin" -ForegroundColor Black
+
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
 Write-Host "##############################################################################################"
@@ -388,15 +319,15 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
-Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
-Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
-Write-Host "4) PCSX2 - $PCSX2done" -ForegroundColor Green
-Write-Host "5) PPSSPP - $PPSSPPdone" -ForegroundColor Green
-Write-Host "6) RetroArch - $RetroArchdone" -ForegroundColor Green
-Write-Host "7) Ryujinx - updating..." -ForegroundColor Red
-Write-Host "8) XEMU" -ForegroundColor Black
-Write-Host "9) Dolphin" -ForegroundColor Black
+Write-Host "1) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "3) PCSX2 - $PCSX2done" -ForegroundColor Green
+Write-Host "4) PPSSPP - $PPSSPPdone" -ForegroundColor Green
+Write-Host "5) RetroArch - $RetroArchdone" -ForegroundColor Green
+Write-Host "6) Ryujinx - updating..." -ForegroundColor Red
+Write-Host "7) XEMU" -ForegroundColor Black
+Write-Host "8) Dolphin" -ForegroundColor Black
+
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
 Write-Host "##############################################################################################"
@@ -452,15 +383,15 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
-Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
-Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
-Write-Host "4) PCSX2 - $PCSX2done" -ForegroundColor Green
-Write-Host "5) PPSSPP - $PPSSPPdone" -ForegroundColor Green
-Write-Host "6) RetroArch - $RetroArchdone" -ForegroundColor Green
-Write-Host "7) Ryujinx - $Ryujinxdone" -ForegroundColor Green
-Write-Host "8) XEMU - updating..." -ForegroundColor red
-Write-Host "9) Dolphin" -ForegroundColor Black
+Write-Host "1) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "3) PCSX2 - $PCSX2done" -ForegroundColor Green
+Write-Host "4) PPSSPP - $PPSSPPdone" -ForegroundColor Green
+Write-Host "5) RetroArch - $RetroArchdone" -ForegroundColor Green
+Write-Host "6) Ryujinx - $Ryujinxdone" -ForegroundColor Green
+Write-Host "7) XEMU - updating..." -ForegroundColor red
+Write-Host "8) Dolphin" -ForegroundColor Black
+
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
 Write-Host "##############################################################################################"
@@ -507,15 +438,15 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
-Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
-Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
-Write-Host "4) PCSX2 - $PCSX2done" -ForegroundColor Green
-Write-Host "5) PPSSPP - $PPSSPPdone" -ForegroundColor Green
-Write-Host "6) RetroArch - $RetroArchdone" -ForegroundColor Green
-Write-Host "7) Ryujinx - $Ryujinxdone" -ForegroundColor Green
-Write-Host "8) XEMU - $XEMUdone" -ForegroundColor Green
-Write-Host "9) Dolphin - updating..." -ForegroundColor Red
+Write-Host "1) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "3) PCSX2 - $PCSX2done" -ForegroundColor Green
+Write-Host "4) PPSSPP - $PPSSPPdone" -ForegroundColor Green
+Write-Host "5) RetroArch - $RetroArchdone" -ForegroundColor Green
+Write-Host "6) Ryujinx - $Ryujinxdone" -ForegroundColor Green
+Write-Host "7) XEMU - $XEMUdone" -ForegroundColor Green
+Write-Host "8) Dolphin - updating..." -ForegroundColor Red
+
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
 Write-Host "##############################################################################################"
@@ -588,15 +519,15 @@ Write-Host "####################################################################
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
-Write-Host "1) yuzu - $YUZUdone" -ForegroundColor Green
-Write-Host "2) RPCS3 - $RPCS3done" -ForegroundColor Green
-Write-Host "3) DuckStation - $DuckStationdone" -ForegroundColor Green
-Write-Host "4) PCSX2 - $PCSX2done" -ForegroundColor Green
-Write-Host "5) PPSSPP - $PPSSPPdone" -ForegroundColor Green
-Write-Host "6) RetroArch - $RetroArchdone" -ForegroundColor Green
-Write-Host "7) Ryujinx - $Ryujinxdone" -ForegroundColor Green
-Write-Host "8) XEMU - $XEMUdone" -ForegroundColor Green
-Write-Host "9) Dolphin - $Dolphindone" -ForegroundColor Green
+Write-Host "1) RPCS3 - $RPCS3done" -ForegroundColor Green
+Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
+Write-Host "3) PCSX2 - $PCSX2done" -ForegroundColor Green
+Write-Host "4) PPSSPP - $PPSSPPdone" -ForegroundColor Green
+Write-Host "5) RetroArch - $RetroArchdone" -ForegroundColor Green
+Write-Host "6) Ryujinx - $Ryujinxdone" -ForegroundColor Green
+Write-Host "7) XEMU - $XEMUdone" -ForegroundColor Green
+Write-Host "8) Dolphin - $Dolphindone" -ForegroundColor Green
 Write-Host ""
 Write-Host "Emulators Updated" -ForegroundColor Magenta
+
 Write-Host "##############################################################################################" -ForegroundColor Blue
