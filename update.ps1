@@ -13,6 +13,11 @@ if (-not (Test-Path -Path $newDirectory)) {
     Write-Output "The 'downloads' folder has been created in the current directory."
 }
 
+# Initialize stats
+$EmulatorsUpdated = 0
+$EmulatorsFailed = 0
+$EmulatorsAlreadyLatest = 0
+
 ##############################################################################################
 
 # RPCS3 update
@@ -51,6 +56,7 @@ if ($response.assets) {
     if (Test-Path downloads/$filename) {
         Write-Host "You Have Latest RPCS3 Version $filename"
         $RPCS3done = "`e[40mYou Already Have Latest $filename`e[0m"
+        $EmulatorsAlreadyLatest += 1
     }
     else {
         Remove-Item downloads/rpcs3*win64.7z -Recurse -Force
@@ -60,11 +66,13 @@ if ($response.assets) {
         if ($LASTEXITCODE -eq 0) {
             Write-Host "Extraction successful."
             $RPCS3done = "Updated To $filename ✓"
+            $EmulatorsUpdated += 1
         }
         else {
             Write-Host "Extraction failed."
             Remove-Item downloads/$filename -Recurse -Force
             $RPCS3done = "`e[31mextraction failed`e[0m"
+            $EmulatorsFailed += 1
         }
     }
 }
@@ -104,6 +112,7 @@ $filename = "duckstation-windows-x64-release-$date.zip"
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest DuckStation Version $filename"
     $DuckStationdone = "`e[40mYou Already Have Latest $filename`e[0m"
+    $EmulatorsAlreadyLatest += 1
 }
 else {
     Remove-Item downloads/duckstation-windows-x64-release*.zip -Recurse -Force
@@ -113,11 +122,13 @@ else {
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Extraction successful."
         $DuckStationdone = "Updated To $filename ✓"
+        $EmulatorsUpdated += 1
     }
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
         $DuckStationdone = "`e[31mextraction failed`e[0m"
+        $EmulatorsFailed += 1
     }
 }
 Write-Host "##############################################################################################"
@@ -164,6 +175,7 @@ if ($latestRelease.assets) {
         if (Test-Path downloads/$filename) {
             Write-Host "You Have Latest PCSX2 Version $filename"
             $PCSX2done = "`e[40mYou Already Have Latest $filename`e[0m"
+            $EmulatorsAlreadyLatest += 1
         }
         else {
             Remove-Item downloads/pcsx2*windows-x64-Qt.7z -Recurse -Force
@@ -173,11 +185,13 @@ if ($latestRelease.assets) {
             if ($LASTEXITCODE -eq 0) {
                 Write-Host "Extraction successful."
                 $PCSX2done = "Updated To $filename ✓"
+                $EmulatorsUpdated += 1
             }
             else {
                 Write-Host "Extraction failed."
                 Remove-Item downloads/$filename -Recurse -Force
                 $PCSX2done = "`e[31mextraction failed`e[0m"
+                $EmulatorsFailed += 1
             }
         }
     }
@@ -233,6 +247,7 @@ $filename = "ppsspp-$revision-windows-amd64.7z"
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest PPSSPP Version $filename"
     $PPSSPPdone = "`e[40mYou Already Have Latest $filename`e[0m"
+    $EmulatorsAlreadyLatest += 1
 }
 else {
     Remove-Item downloads/ppsspp*windows-amd64.7z -Recurse -Force
@@ -246,12 +261,13 @@ else {
         Copy-Item  -Path "temp/ppsspp/*" -Destination $targetFolder -Recurse -force
         Remove-Item temp -Recurse -Force
         $PPSSPPdone = "Updated To $filename ✓"
-
+        $EmulatorsUpdated += 1
     }
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
         $PPSSPPdone = "`e[31mextraction failed`e[0m"
+        $EmulatorsFailed += 1
     }
 }
 Write-Host "##############################################################################################"
@@ -294,6 +310,7 @@ $filename = "RetroArch-$lastModifiedDate.7z"
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest RetroArch Version $filename"
     $RetroArchdone = "`e[40mYou Already Have Latest $filename`e[0m"
+    $EmulatorsAlreadyLatest += 1
 }
 else {
     Remove-Item downloads/RetroArch*.7z -Recurse -Force
@@ -303,11 +320,13 @@ else {
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Extraction successful."
         $RetroArchdone = "Updated To $filename ✓"
+        $EmulatorsUpdated += 1
     }
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
         $RetroArchdone = "`e[31mextraction failed`e[0m"
+        $EmulatorsFailed += 1
     }
 }
 Write-Host "##############################################################################################"
@@ -356,6 +375,7 @@ if ($windowsAsset) {
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest Ryujinx Version $filename"
     $Ryujinxdone = "`e[40mYou Already Have Latest $filename`e[0m"
+    $EmulatorsAlreadyLatest += 1
 }
 else {
     Remove-Item downloads/*ryujinx*win_x64.zip -Recurse -Force
@@ -367,11 +387,13 @@ else {
         Copy-Item  -Path "temp/publish/*" -Destination $targetFolder -Recurse -force
         Remove-Item temp -Recurse -Force
         $Ryujinxdone = "Updated To $filename ✓"
+        $EmulatorsUpdated += 1
     }
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
         $Ryujinxdone = "`e[31mextraction failed`e[0m"
+        $EmulatorsFailed += 1
     }
 }
 Write-Host "##############################################################################################"
@@ -412,6 +434,7 @@ $filename = "xemu-win-release-$version.zip"
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest XEMU Version $filename"
     $XEMUdone = "`e[40mYou Already Have Latest $filename`e[0m"
+    $EmulatorsAlreadyLatest += 1
 }
 else {
     Remove-Item downloads/xemu-win-release*.zip -Recurse -Force
@@ -421,11 +444,13 @@ else {
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Extraction successful."
         $XEMUdone = "Updated To $filename ✓"
+        $EmulatorsUpdated += 1
     }
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
         $XEMUdone = "`e[31mextraction failed`e[0m"
+        $EmulatorsFailed += 1
     }
 }
 
@@ -494,6 +519,7 @@ $filename = [System.IO.Path]::GetFileName($downloadLink)
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest Dolphin Version $filename"
     $Dolphindone = "`e[40mYou Already Have Latest $filename`e[0m"
+    $EmulatorsAlreadyLatest += 1
 }
 else {
     Remove-Item downloads/dolphin-master*x64.7z -Recurse -Force
@@ -505,11 +531,13 @@ else {
         Copy-Item  -Path "temp/Dolphin-x64/*" -Destination $targetFolder -Recurse -force
         Remove-Item temp -Recurse -Force
         $Dolphindone = "Updated To $filename ✓"
+        $EmulatorsUpdated += 1
     }
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
         $Dolphindone = "`e[31mextraction failed`e[0m"
+        $EmulatorsFailed += 1
     }
 }
 Write-Host "##############################################################################################"
@@ -528,6 +556,14 @@ Write-Host "6) Ryujinx - $Ryujinxdone" -ForegroundColor Green
 Write-Host "7) XEMU - $XEMUdone" -ForegroundColor Green
 Write-Host "8) Dolphin - $Dolphindone" -ForegroundColor Green
 Write-Host ""
-Write-Host "Emulators Updated" -ForegroundColor Magenta
+# Display the stats
+Write-Host "Emulators Updated             : " -NoNewline
+Write-Host "[ $EmulatorsUpdated ]" -ForegroundColor Green
+
+Write-Host "Emulators Update Failed       : " -NoNewline
+Write-Host "[ $EmulatorsFailed ]" -ForegroundColor Red
+
+Write-Host "Emulators Already Latest      : " -NoNewline
+Write-Host "[ $EmulatorsAlreadyLatest ]" -ForegroundColor Yellow
 
 Write-Host "##############################################################################################" -ForegroundColor Blue
