@@ -9,4 +9,3 @@ PPSSPP
 RetroArch
 Ryujinx
 XEMU
-YUZU
