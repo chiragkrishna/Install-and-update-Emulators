@@ -225,24 +225,15 @@ Write-Host "####################################################################
 $targetFolder = Join-Path (Get-Location) 'PPSSPP'
 
 # Send a web request to the URL
-$request = Invoke-WebRequest -Uri "https://buildbot.orphis.net/ppsspp/index.php"
+$request = Invoke-WebRequest -Uri "https://www.ppsspp.org/download/"
 
 # Extract the download link from the response
-$downloadLink = $request.Links | Where-Object href -like '*windows-amd64' | Select-Object -First 1 | Select-Object -ExpandProperty href
-$cleanedUrl = $downloadLink -replace "amp;", ""
-
-# Define a regular expression to extract the revision string
-$regex = 'rev=([^&]+)'
-
-# Use Select-String to find matches in the URL
-$version = $cleanedUrl | Select-String -Pattern $regex
-
-# Extract the revision string from the match
-$revision = $version.Matches.Groups[1].Value
+$downloadLink = $request.Links | Where-Object href -like '*ppsspp_win.zip' | Select-Object -First 1 | Select-Object -ExpandProperty href
+$urlParts = $downloadLink.Split('/')
+$version = $urlParts[-2]
 
 # Download the file using the extracted URL
-$downloadUrl = "https://buildbot.orphis.net$cleanedUrl"
-$filename = "ppsspp-$revision-windows-amd64.7z"
+$filename = "ppsspp_win_$version.zip"
 
 if (Test-Path downloads/$filename) {
     Write-Host "You Have Latest PPSSPP Version $filename"
@@ -250,11 +241,8 @@ if (Test-Path downloads/$filename) {
     $EmulatorsAlreadyLatest += 1
 }
 else {
-    Remove-Item downloads/ppsspp*windows-amd64.7z -Recurse -Force
-    Invoke-WebRequest -Uri "$downloadUrl" -OutFile downloads/"$filename" -Headers @{
-        "Referer"    = "https://buildbot.orphis.net";
-        "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"
-    }
+    Remove-Item downloads/ppsspp_win_*.zip -Recurse -Force
+    Invoke-WebRequest -Uri "$downloadUrl" -OutFile downloads/"$filename"
     7z x downloads/$filename -o"temp" -y
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Extraction successful."
