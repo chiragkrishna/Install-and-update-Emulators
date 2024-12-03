@@ -30,7 +30,7 @@ Write-Host "2) DuckStation" -ForegroundColor Black
 Write-Host "3) PCSX2" -ForegroundColor Black
 Write-Host "4) PPSSPP" -ForegroundColor Black
 Write-Host "5) RetroArch" -ForegroundColor Black
-Write-Host "6) Ryujinx" -ForegroundColor Black
+Write-Host "6) Citron" -ForegroundColor Black
 Write-Host "7) XEMU" -ForegroundColor Black
 Write-Host "8) Dolphin" -ForegroundColor Black
 
@@ -90,7 +90,7 @@ Write-Host "2) DuckStation - updating..." -ForegroundColor Red
 Write-Host "3) PCSX2" -ForegroundColor Black
 Write-Host "4) PPSSPP" -ForegroundColor Black
 Write-Host "5) RetroArch" -ForegroundColor Black
-Write-Host "6) Ryujinx" -ForegroundColor Black
+Write-Host "6) Citron" -ForegroundColor Black
 Write-Host "7) XEMU" -ForegroundColor Black
 Write-Host "8) Dolphin" -ForegroundColor Black
 
@@ -145,7 +145,7 @@ Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
 Write-Host "3) PCSX2 - updating..." -ForegroundColor Red
 Write-Host "4) PPSSPP" -ForegroundColor Black
 Write-Host "5) RetroArch" -ForegroundColor Black
-Write-Host "6) Ryujinx" -ForegroundColor Black
+Write-Host "6) Citron" -ForegroundColor Black
 Write-Host "7) XEMU" -ForegroundColor Black
 Write-Host "8) Dolphin" -ForegroundColor Black
 
@@ -211,7 +211,7 @@ Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
 Write-Host "3) PCSX2 - $PCSX2done" -ForegroundColor Green
 Write-Host "4) PPSSPP - updating..." -ForegroundColor Red
 Write-Host "5) RetroArch" -ForegroundColor Black
-Write-Host "6) Ryujinx" -ForegroundColor Black
+Write-Host "6) Citron" -ForegroundColor Black
 Write-Host "7) XEMU" -ForegroundColor Black
 Write-Host "8) Dolphin" -ForegroundColor Black
 
@@ -220,19 +220,15 @@ Write-Host "####################################################################
 Write-Host "##############################################################################################"
 Write-Host "                                        Updating PPSSPP"
 Write-Host "##############################################################################################"
-
 # Specify the target folder
 $targetFolder = Join-Path (Get-Location) 'PPSSPP'
 
-# Send a web request to the URL
-$request = Invoke-WebRequest -Uri "https://www.ppsspp.org/download/"
+# Get the latest release information from the GitHub API
+$response = Invoke-RestMethod -Uri "https://api.github.com/repos/hrydgard/ppsspp/releases/latest"
+$version = $response.tag_name -replace '^v', '' -replace '\.', '_'
 
-# Extract the download link from the response
-$downloadLink = $request.Links | Where-Object href -like '*ppsspp_win.zip' | Select-Object -First 1 | Select-Object -ExpandProperty href
-$urlParts = $downloadLink.Split('/')
-$version = $urlParts[-2]
-
-# Download the file using the extracted URL
+# Extract the download URL and filename from the asset
+$downloadUrl = "https://www.ppsspp.org/files/$version/ppsspp_win.zip"
 $filename = "ppsspp_win_$version.zip"
 
 if (Test-Path downloads/$filename) {
@@ -242,11 +238,12 @@ if (Test-Path downloads/$filename) {
 }
 else {
     Remove-Item downloads/ppsspp_win_*.zip -Recurse -Force
-    Invoke-WebRequest -Uri "$downloadUrl" -OutFile downloads/"$filename"
+    Invoke-WebRequest -Uri "$downloadUrl" -OutFile downloads/"$filename" -AllowInsecureRedirect
+
     7z x downloads/$filename -o"temp" -y
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Extraction successful."
-        Copy-Item  -Path "temp/ppsspp/*" -Destination $targetFolder -Recurse -force
+        Copy-Item  -Path "temp/*" -Destination $targetFolder -Recurse -force
         Remove-Item temp -Recurse -Force
         $PPSSPPdone = "Updated To $filename ✓"
         $EmulatorsUpdated += 1
@@ -272,7 +269,7 @@ Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
 Write-Host "3) PCSX2 - $PCSX2done" -ForegroundColor Green
 Write-Host "4) PPSSPP - $PPSSPPdone" -ForegroundColor Green
 Write-Host "5) RetroArch - updating..." -ForegroundColor Red
-Write-Host "6) Ryujinx" -ForegroundColor Black
+Write-Host "6) Citron" -ForegroundColor Black
 Write-Host "7) XEMU" -ForegroundColor Black
 Write-Host "8) Dolphin" -ForegroundColor Black
 
@@ -321,7 +318,7 @@ Write-Host "####################################################################
 Write-Host "                                        Updating RetroArch Finished"
 Write-Host "##############################################################################################"
 
-# Ryujinx update
+# Citron update
 
 cls
 Write-Host "##############################################################################################" -ForegroundColor Blue
@@ -331,61 +328,67 @@ Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
 Write-Host "3) PCSX2 - $PCSX2done" -ForegroundColor Green
 Write-Host "4) PPSSPP - $PPSSPPdone" -ForegroundColor Green
 Write-Host "5) RetroArch - $RetroArchdone" -ForegroundColor Green
-Write-Host "6) Ryujinx - updating..." -ForegroundColor Red
+Write-Host "6) Citron - updating..." -ForegroundColor Red
 Write-Host "7) XEMU" -ForegroundColor Black
 Write-Host "8) Dolphin" -ForegroundColor Black
 
 Write-Host "##############################################################################################" -ForegroundColor Blue
 
 Write-Host "##############################################################################################"
-Write-Host "                                        Updating Ryujinx"
+Write-Host "                                        Updating Citron"
 Write-Host "##############################################################################################"
-
 # Specify the target folder
-$targetFolder = Join-Path (Get-Location) 'Ryujinx'
+$targetFolder = Join-Path (Get-Location) 'Citron'
 
-# Get the latest release information from the GitHub API
-$releasesInfo = Invoke-RestMethod -Uri "https://api.github.com/repos/Ryujinx/release-channel-master/releases"
+# Define the RSS feed URL
+$rssUrl = "https://git.citron-emu.org/Citron/Citron/releases.rss"
 
-# Get the first release (assumes releases are sorted by date, modify as needed)
-$latestRelease = $releasesInfo[0]
+# Download and parse the RSS feed
+$rssContent = Invoke-WebRequest -Uri $rssUrl -UseBasicParsing
+[xml]$rssXml = $rssContent.Content
 
-# Check if the response contains the necessary information
-if ($latestRelease.assets) {
-    # Filter assets for the one with the desired name pattern (e.g., contains "windows" and ".7z")
-    $windowsAsset = $latestRelease.assets | Where-Object { $_.name -like '*ava*' -and $_.name -like '*win_x64.zip' }
+# Extract the latest release title
+$latestTitle = $rssXml.rss.channel.item[0].title
+
+# Extract the version name using regex
+if ($latestTitle -match "Nightly Build (\d{8}_\d{6})") {
+    $latestVersion = $matches[1]
 }
-if ($windowsAsset) {
-    # Extract the download URL and filename from the asset
-    $downloadUrl = $windowsAsset.browser_download_url
-    $filename = [System.IO.Path]::GetFileName($downloadUrl)
+else {
+    Write-Output "No valid version found in the latest release title."
 }
+
+# Extract the download URL and filename from the asset
+$downloadUrl = "https://git.citron-emu.org/Citron/Citron/releases/download/nightly-$latestVersion/Citron-Windows_x86_64.zip"
+$filename = "Citron-Windows-$latestVersion.zip"
+
+
 if (Test-Path downloads/$filename) {
-    Write-Host "You Have Latest Ryujinx Version $filename"
-    $Ryujinxdone = "`e[40mYou Already Have Latest $filename`e[0m"
+    Write-Host "You Have Latest Citron Version $filename"
+    $Citrondone = "`e[40mYou Already Have Latest $filename`e[0m"
     $EmulatorsAlreadyLatest += 1
 }
 else {
-    Remove-Item downloads/*ryujinx*win_x64.zip -Recurse -Force
+    Remove-Item downloads/Citron-Windows-*.zip -Recurse -Force
     # Download the file using the extracted URL
     Invoke-WebRequest -Uri $downloadUrl -OutFile downloads/$filename
     7z x downloads/$filename -o"temp" -y
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Extraction successful."
-        Copy-Item  -Path "temp/publish/*" -Destination $targetFolder -Recurse -force
+        Copy-Item  -Path "temp/Citron-Windows_x86_64/*" -Destination $targetFolder -Recurse -force
         Remove-Item temp -Recurse -Force
-        $Ryujinxdone = "Updated To $filename ✓"
+        $Citrondone = "Updated To $filename ✓"
         $EmulatorsUpdated += 1
     }
     else {
         Write-Host "Extraction failed."
         Remove-Item downloads/$filename -Recurse -Force
-        $Ryujinxdone = "`e[31mextraction failed`e[0m"
+        $Citrondone = "`e[31mextraction failed`e[0m"
         $EmulatorsFailed += 1
     }
 }
 Write-Host "##############################################################################################"
-Write-Host "                                        Updating Ryujinx Finished"
+Write-Host "                                        Updating Citron Finished"
 Write-Host "##############################################################################################"
 
 # XEMU update
@@ -398,7 +401,7 @@ Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
 Write-Host "3) PCSX2 - $PCSX2done" -ForegroundColor Green
 Write-Host "4) PPSSPP - $PPSSPPdone" -ForegroundColor Green
 Write-Host "5) RetroArch - $RetroArchdone" -ForegroundColor Green
-Write-Host "6) Ryujinx - $Ryujinxdone" -ForegroundColor Green
+Write-Host "6) Citron - $Citrondone" -ForegroundColor Green
 Write-Host "7) XEMU - updating..." -ForegroundColor red
 Write-Host "8) Dolphin" -ForegroundColor Black
 
@@ -456,7 +459,7 @@ Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
 Write-Host "3) PCSX2 - $PCSX2done" -ForegroundColor Green
 Write-Host "4) PPSSPP - $PPSSPPdone" -ForegroundColor Green
 Write-Host "5) RetroArch - $RetroArchdone" -ForegroundColor Green
-Write-Host "6) Ryujinx - $Ryujinxdone" -ForegroundColor Green
+Write-Host "6) Citron - $Citrondone" -ForegroundColor Green
 Write-Host "7) XEMU - $XEMUdone" -ForegroundColor Green
 Write-Host "8) Dolphin - updating..." -ForegroundColor Red
 
@@ -540,7 +543,7 @@ Write-Host "2) DuckStation - $DuckStationdone" -ForegroundColor Green
 Write-Host "3) PCSX2 - $PCSX2done" -ForegroundColor Green
 Write-Host "4) PPSSPP - $PPSSPPdone" -ForegroundColor Green
 Write-Host "5) RetroArch - $RetroArchdone" -ForegroundColor Green
-Write-Host "6) Ryujinx - $Ryujinxdone" -ForegroundColor Green
+Write-Host "6) Citron - $Citrondone" -ForegroundColor Green
 Write-Host "7) XEMU - $XEMUdone" -ForegroundColor Green
 Write-Host "8) Dolphin - $Dolphindone" -ForegroundColor Green
 Write-Host ""
